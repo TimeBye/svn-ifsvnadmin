@@ -1,5 +1,4 @@
 #!/bin/bash
-AUTH_LDAP_URL="${AUTH_LDAP_URL:-ldap://ac.hand-china.com/ou=employee,dc=hand-china,dc=com?employeeNumber?sub?(objectClass=*)}"
 cat > /etc/apache2/mods-available/dav_svn.conf << EOF
 # dav_svn.conf - Example Subversion/Apache configuration
 #
@@ -60,18 +59,14 @@ cat > /etc/apache2/mods-available/dav_svn.conf << EOF
 <Location /svn>
     DAV svn
     SVNParentPath /var/www/html/svnrepos
-    SVNListParentPath on
-    SVNReposName "Choerodon SVN"
-    # authentication
     AuthType Basic
     AuthName "Subversion Server"
-    AuthBasicProvider ldap
-    AuthzSVNAccessfile /var/www/html/svnrepos/authz
-    #AuthLDAPBindDN "CN=root,DC=xliu-home,DC=org"
-    #AuthLDAPBindPassword MyLdapPasswdInPlainText
-    AuthLDAPURL "${AUTH_LDAP_URL}"
+    # 认证文件
+    AuthUserFile /var/www/html/svnrepos/authenticate
     Require valid-user
-</Location>
+    # 授权文件
+    AuthzSVNAccessFile /var/www/html/svnrepos/authorization
+ </location>
 EOF
 
 if [ ! -e "/var/www/html/svnadmin/data/config.ini" ];then
@@ -79,7 +74,8 @@ if [ ! -e "/var/www/html/svnadmin/data/config.ini" ];then
     cp -rf /var/www/html/svnadmin/data.bak/* /var/www/html/svnadmin/data
 fi
 
-touch /var/www/html/svnrepos/authz
-chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authz
+touch /var/www/html/svnrepos/authenticate
+touch /var/www/html/svnrepos/authorization
+chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authenticate /var/www/html/svnrepos/authorization
 /usr/sbin/apache2ctl -D FOREGROUND
 wait
