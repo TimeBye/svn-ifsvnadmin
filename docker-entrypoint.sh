@@ -62,7 +62,7 @@ cat > /etc/apache2/mods-available/dav_svn.conf << EOF
     AuthType Basic
     AuthName "Subversion Server"
     # 认证文件
-    AuthUserFile /var/www/html/svnrepos/authenticate
+    AuthUserFile /var/www/html/svnrepos/authentication
     Require valid-user
     # 授权文件
     AuthzSVNAccessFile /var/www/html/svnrepos/authorization
@@ -74,8 +74,8 @@ if [ ! -e "/var/www/html/svnadmin/data/config.ini" ];then
     cp -rf /var/www/html/svnadmin/data.bak/* /var/www/html/svnadmin/data
 fi
 
-touch /var/www/html/svnrepos/authenticate
+touch /var/www/html/svnrepos/authentication
 touch /var/www/html/svnrepos/authorization
-chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authenticate /var/www/html/svnrepos/authorization
+chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authentication /var/www/html/svnrepos/authorization
 /usr/sbin/apache2ctl -D FOREGROUND
 wait
