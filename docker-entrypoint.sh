@@ -66,7 +66,8 @@ cat > /etc/apache2/mods-available/dav_svn.conf << EOF
     AuthType Basic
     AuthName "Subversion Server"
     AuthBasicProvider ldap
-    AuthzSVNAccessfile /var/www/html/svnrepos/authz
+    # 授权文件
+    AuthzSVNAccessfile /var/www/html/svnrepos/authorization
     #AuthLDAPBindDN "CN=root,DC=xliu-home,DC=org"
     #AuthLDAPBindPassword MyLdapPasswdInPlainText
     AuthLDAPURL "${AUTH_LDAP_URL}"
@@ -79,7 +80,7 @@ if [ ! -e "/var/www/html/svnadmin/data/config.ini" ];then
     cp -rf /var/www/html/svnadmin/data.bak/* /var/www/html/svnadmin/data
 fi
 
-touch /var/www/html/svnrepos/authz
-chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authz
+touch /var/www/html/svnrepos/authorization
+chown www-data:www-data -R /var/www/html/svnadmin/data /var/www/html/svnrepos /var/www/html/svnrepos/authorization
 /usr/sbin/apache2ctl -D FOREGROUND
 wait

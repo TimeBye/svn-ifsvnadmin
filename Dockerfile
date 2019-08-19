@@ -1,22 +1,12 @@
 FROM ubuntu:16.04
-ENV DEBIAN_FRONTEND=noninteractive \
-    APACHE_LOG_DIR=/var/log/apache2 \
+ENV APACHE_LOG_DIR=/var/log/apache2 \
     APACHE_LOCK_DIR=/var/lock/apache2 \
     APACHE_PID_FILE=/var/run/apache2.pid
 
 COPY docker-entrypoint.sh config.tpl.ini /
 
-RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
-    echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-proposed main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.aliyun.com/ubuntu/ xenial main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.aliyun.com/ubuntu/ xenial-proposed main restricted universe multiverse' >> /etc/apt/sources.list && \
-    echo 'deb-src http://mirrors.aliyun.com/ubuntu/ xenial-backports main restricted universe multiverse' >> /etc/apt/sources.list
+RUN cp /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    sed -i 's archive.ubuntu.com mirrors.aliyun.com g;s security.ubuntu.com mirrors.aliyun.com g' /etc/apt/sources.list
 
 # Install apache2, php 5.6, subversion, IF.SVNAdmin
 RUN apt update && \
